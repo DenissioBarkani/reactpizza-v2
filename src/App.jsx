@@ -18,6 +18,7 @@ function App() {
                             <Route path="/cart" element={<Cart></Cart>}></Route>
                             <Route path="*" element={<NotFound></NotFound>}></Route>
                         </Routes>
+                        7
                     </div>
                 </div>
             </div>
