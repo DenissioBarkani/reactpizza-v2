@@ -4,7 +4,7 @@ import Sort from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
 import PizzaBlock from '../components/PizzaBlock';
 
- const Home = () => {
+const Home = () => {
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // https://682e1ef0746f8ca4a47bf828.mockapi.io/items
@@ -23,9 +23,10 @@ import PizzaBlock from '../components/PizzaBlock';
                 setItems(arr);
                 setIsLoading(false);
             });
+        window.scrollTo(0, 0);
     }, []);
     return (
-        <>
+        <div className="container">
             <div class="content__top">
                 <Categories />
                 <Sort />
@@ -39,8 +40,8 @@ import PizzaBlock from '../components/PizzaBlock';
                           // <PizzaBlock key={obj} title={obj.title} price={obj.price} sizes={obj.sizes} types={obj.types}/>
                       ))}
             </div>
-        </>
+        </div>
     );
 };
 
-export default Home
+export default Home;

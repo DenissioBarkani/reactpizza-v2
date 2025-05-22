@@ -12,14 +12,14 @@ function App() {
             <div class="wrapper">
                 <Header />
                 <div class="content">
-                    <div class="container">
-                        <Routes>
-                            <Route path="/" element={<Home></Home>}></Route>
-                            <Route path="/cart" element={<Cart></Cart>}></Route>
-                            <Route path="*" element={<NotFound></NotFound>}></Route>
-                        </Routes>
-                        7
-                    </div>
+                    {/* <div class="container"> */}
+                    <Routes>
+                        <Route path="/" element={<Home></Home>}></Route>
+                        <Route path="/cart" element={<Cart></Cart>}></Route>
+                        <Route path="*" element={<NotFound></NotFound>}></Route>
+                    </Routes>
+
+                    {/* </div> */}
                 </div>
             </div>
         </div>
