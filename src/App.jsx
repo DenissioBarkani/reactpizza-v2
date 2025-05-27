@@ -12,13 +12,11 @@ import { decrement, increment } from './redux/slices/filterslice.js';
 export const SearchContext = createContext();
 
 function App() {
-    const count = useSelector((state) => state.counter.value);
-    const dispatch = useDispatch();
 
     const [searchValue, setSearchValue] = useState('');
     return (
         <div className="App">
-            {/* <div class="wrapper">
+            <div class="wrapper">
                 <SearchContext.Provider value={{ searchValue, setSearchValue }}>
                     <Header />
                     <div class="content">
@@ -32,9 +30,9 @@ function App() {
    
                     </div>
                 </SearchContext.Provider>
-            </div> */}
+            </div>
 
-            <div>
+            {/* <div>
                 <button aria-label="Increment value" onClick={() => dispatch(increment())}>
                     Increment
                 </button>
@@ -42,7 +40,7 @@ function App() {
                 <button aria-label="Decrement value" onClick={() => dispatch(decrement())}>
                     Decrement
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 }
