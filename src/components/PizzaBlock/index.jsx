@@ -8,14 +8,14 @@ export default function PizzaBlock({ title, price, sizes, types }) {
     const typeNames = ['Тонкое', 'Традиицонное'];
     return (
         <div className='pizza-block-wrapper'>
-            <div class="pizza-block">
+            <div className="pizza-block">
                 <img
-                    class="pizza-block__image"
+                    className="pizza-block__image"
                     src="https://media.dodostatic.net/image/r:292x292/019591b642d87304a62d322945990861.avif"
                     alt="Pizza"
                 />
-                <h4 class="pizza-block__title">{title}</h4>
-                <div class="pizza-block__selector">
+                <h4 className="pizza-block__title">{title}</h4>
+                <div className="pizza-block__selector">
                     <ul>
                         {types.map((type) => (
                             <li
@@ -37,9 +37,9 @@ export default function PizzaBlock({ title, price, sizes, types }) {
                         ))}
                     </ul>
                 </div>
-                <div class="pizza-block__bottom">
-                    <div class="pizza-block__price">от {price} ₽</div>
-                    <button class="button button--outline button--add">
+                <div className="pizza-block__bottom">
+                    <div className="pizza-block__price">от {price} ₽</div>
+                    <button className="button button--outline button--add">
                         <svg
                             width="12"
                             height="12"

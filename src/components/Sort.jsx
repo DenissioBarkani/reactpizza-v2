@@ -25,8 +25,8 @@ export default function Sort() {
     };
 
     return (
-        <div class="sort">
-            <div onClick={() => setIsVisible(!isVisible)} class="sort__label">
+        <div className="sort">
+            <div onClick={() => setIsVisible(!isVisible)} className="sort__label">
                 <svg
                     width="10"
                     height="6"
@@ -43,7 +43,7 @@ export default function Sort() {
             </div>
 
             {isVisible && (
-                <div class="sort__popup">
+                <div className="sort__popup">
                     <ul>
                         {list.map((obj, index) => (
                             <li
