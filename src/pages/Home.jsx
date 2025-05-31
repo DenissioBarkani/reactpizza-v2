@@ -1,6 +1,6 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Categories from '../components/Categories';
-import Sort, { list, sortList } from '../components/Sort';
+import Sort, { sortList } from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
 import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
@@ -10,37 +10,30 @@ import axios from 'axios';
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
-import react from 'react';
 
 const Home = () => {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const isSearch = useRef(false);
-    const isMounted = useRef(false);
-    // const [categoryID, setCategoryId] = React.useState(0);
-    // const [currentPage, setCurrentPage] = useState(1);
-    // const [sortType, setSortType] = React.useState({
-    //     name: 'популярности',
-    //     sortProperty: 'rating',
-    // });
+    const isSearch = useRef(false); // флаг: были ли параметры из URL (чтобы не делать лишний fetch)
+    const isMounted = useRef(false); // флаг: первый рендер (чтобы не пушить query в URL сразу)
 
-    const searchValue = useContext(SearchContext);
-    // const sortType = useSelector((state) => state.filter.sort.sortProperty);
-    const { sort, categoryId, currentPage } = useSelector((state) => state.filter);
+    const searchValue = useContext(SearchContext); // строка поиска из App (через Context)
+    const { sort, categoryId, currentPage } = useSelector((state) => state.filter); // данные из Redux
     const sortType = sort.sortProperty;
+
+    const dispatch = useDispatch();
 
     const onChangePage = (number) => {
         dispatch(setCurrentPage(number));
     };
 
-    const dispatch = useDispatch();
     const OnChangeCategory = (id) => {
         dispatch(setCategoryId(id));
     };
 
     const fetchPizzas = () => {
-        setIsLoading(true);
+        setIsLoading(true); // показать скелетоны
         const order = sortType.includes('-') ? 'asc' : 'desc';
         const sortBy = sortType.replace('-', '');
         const category = categoryId > 0 ? `category=${categoryId}` : '';
@@ -51,30 +44,24 @@ const Home = () => {
                 `https://682e1ef0746f8ca4a47bf828.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
             )
             .then((res) => {
-                // if (res.statusText !== "OK") {
-                //     // Если статус не 200-299
-                //     throw new Error('Not Found');
-                // }
                 if (res.status < 200 || res.status >= 300) {
                     throw new Error(`HTTP error! status: ${res.status}`);
                 }
-                // console.log(res.statusText);
-                return setItems(res.data);
+                return setItems(res.data); // сохраняем пиццы
             })
             .catch((error) => {
                 if (error.response) {
-                    // Сервер ответил с кодом ошибки (4xx, 5xx)
                     console.error('Server error:', error.response.status);
                 } else {
-                    // Другие ошибки (нет соединения и т.д.)
                     console.error('Request error:', error.message);
                 }
             })
             .finally(() => {
-                setIsLoading(false); // В любом случае снимаем загрузку
+                setIsLoading(false); // скрываем скелетоны
             });
     };
 
+    // 🔹 1. При первом рендере — если есть параметры в URL, парсим и сохраняем в Redux
     useEffect(() => {
         if (window.location.search) {
             const params = qs.parse(window.location.search.substring(1));
@@ -84,21 +71,26 @@ const Home = () => {
                 setFilters({
                     currentPage: Number(params.currentPage),
                     categoryId: Number(params.categoryId),
-                    sort: sortObj, // Если sortObj не найден, используем дефолтное значение
+                    sort: sortObj, // если нет — undefined
                 }),
             );
-            isSearch.current = true;
+            isSearch.current = true; // активируем флаг, чтобы в следующем эффекте не делать fetch
         }
     }, []);
 
+    // 🔹 2. Когда меняются фильтры или строка поиска — получаем данные с сервера
     useEffect(() => {
-        window.scrollTo(0, 0);
-        if (!isSearch.current) {
-            fetchPizzas();
-        }
-        isSearch.current = false;
-    }, [categoryId, sortType, searchValue, currentPage]);
+        window.scrollTo(0, 0); // при любом фильтре скроллим вверх
 
+        if (isSearch.current) {
+            fetchPizzas();       // если был переход с параметрами, делаем fetch один раз
+            isSearch.current = false; // и сбрасываем флаг
+        } else {
+            fetchPizzas();       // обычный случай — при изменении фильтра, страницы, строки поиска
+        }
+    }, [categoryId, sort.sortProperty, searchValue, currentPage]);
+
+    // 🔹 3. Когда меняются параметры (после действия пользователя) — обновляем URL
     useEffect(() => {
         if (isMounted.current) {
             const queryString = qs.stringify({
@@ -106,9 +98,9 @@ const Home = () => {
                 categoryId,
                 currentPage,
             });
-            navigate(`?${queryString}`);
+            navigate(`?${queryString}`); // пушим в URL
         }
-        isMounted.current = true;
+        isMounted.current = true; // первый рендер прошёл — теперь можно пушить
     }, [categoryId, sortType, currentPage]);
 
     const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);

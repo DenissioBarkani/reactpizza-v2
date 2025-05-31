@@ -1,13 +1,33 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct } from '../../redux/slices/cartSlice';
 
-export default function PizzaBlock({ title, price, sizes, types }) {
+const typeNames = ['Тонкое', 'Традиицонное'];
+// const sizes = ['Тонкое', 'Традиицонное'];
+export default function PizzaBlock({ id, title, price, sizes, types }) {
+    const dispatch = useDispatch();
+    const cartItem = useSelector((state) => state.cart.items.find((obj) => obj.id === id));
     const [activeType, setActiveType] = useState(0);
     const [activeSize, setActiveSize] = useState(0);
     // onClick={() => setPizzaCount(pizzaCount + 1)}
 
-    const typeNames = ['Тонкое', 'Традиицонное'];
+    const addedCount = cartItem ? cartItem.count : 0;
+
+    const onClickHead = () => {
+        const item = {
+            id,
+            title,
+            price,
+            imageUrl:
+                'https://media.dodostatic.net/image/r:292x292/019591b642d87304a62d322945990861.avif',
+            type: typeNames[activeType],
+            size: sizes[activeSize],
+        };
+        dispatch(addProduct(item));
+    };
+
     return (
-        <div className='pizza-block-wrapper'>
+        <div className="pizza-block-wrapper">
             <div className="pizza-block">
                 <img
                     className="pizza-block__image"
@@ -39,7 +59,9 @@ export default function PizzaBlock({ title, price, sizes, types }) {
                 </div>
                 <div className="pizza-block__bottom">
                     <div className="pizza-block__price">от {price} ₽</div>
-                    <button className="button button--outline button--add">
+                    <button
+                        onClick={() => onClickHead()}
+                        className="button button--outline button--add">
                         <svg
                             width="12"
                             height="12"
@@ -52,7 +74,7 @@ export default function PizzaBlock({ title, price, sizes, types }) {
                             />
                         </svg>
                         <span>Добавить</span>
-                        <i>0</i>
+                        {addedCount > 0 && <i>{addedCount}</i>}
                     </button>
                 </div>
             </div>
