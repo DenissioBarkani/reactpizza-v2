@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
@@ -10,11 +10,14 @@ import axios from 'axios';
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
+import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
 const Home = () => {
     const navigate = useNavigate();
-    const [items, setItems] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [items, setItems] = useState([]);
+    const { items, status } = useSelector((state) => state.pizzas); // данные из Redux
+    // const [isLoading, setIsLoading] = useState(true);
+
     const isSearch = useRef(false); // флаг: были ли параметры из URL (чтобы не делать лишний fetch)
     const isMounted = useRef(false); // флаг: первый рендер (чтобы не пушить query в URL сразу)
 
@@ -32,33 +35,51 @@ const Home = () => {
         dispatch(setCategoryId(id));
     };
 
-    const fetchPizzas = () => {
-        setIsLoading(true); // показать скелетоны
+    const getPizzas = async () => {
+        // setIsLoading(true); // показать скелетоны
         const order = sortType.includes('-') ? 'asc' : 'desc';
         const sortBy = sortType.replace('-', '');
         const category = categoryId > 0 ? `category=${categoryId}` : '';
         const search = searchValue ? `&search=${searchValue}` : '';
 
-        axios
-            .get(
-                `https://682e1ef0746f8ca4a47bf828.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-            )
-            .then((res) => {
-                if (res.status < 200 || res.status >= 300) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return setItems(res.data); // сохраняем пиццы
-            })
-            .catch((error) => {
-                if (error.response) {
-                    console.error('Server error:', error.response.status);
-                } else {
-                    console.error('Request error:', error.message);
-                }
-            })
-            .finally(() => {
-                setIsLoading(false); // скрываем скелетоны
-            });
+        // await axios
+        //     .get(
+        //         `https://682e1ef0746f8ca4a47bf828.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+        //     )
+        //     .then((res) => {
+        //         if (res.status < 200 || res.status >= 300) {
+        //             throw new Error(`HTTP error! status: ${res.status}`);
+        //         }
+        //         return setItems(res.data); // сохраняем пиццы
+        //     })
+        //     .catch((error) => {
+        //         if (error.response) {
+        //             console.error('Server error:', error.response.status);
+        //         } else {
+        //             console.error('Request error:', error.message);
+        //         }
+        //     })
+        //     .finally(() => {
+        //         setIsLoading(false); // скрываем скелетоны
+        //     });
+
+        // try {
+
+        // } catch (error) {
+        //     console.log('Error', error);
+        // } finally {
+        //     // setIsLoading(false); // скрываем скелетоны
+        // }
+
+        dispatch(
+            fetchPizzas({
+                order,
+                sortBy,
+                category,
+                search,
+                currentPage,
+            }),
+        ); // сохраняем пиццы
     };
 
     // 🔹 1. При первом рендере — если есть параметры в URL, парсим и сохраняем в Redux
@@ -83,10 +104,10 @@ const Home = () => {
         window.scrollTo(0, 0); // при любом фильтре скроллим вверх
 
         if (isSearch.current) {
-            fetchPizzas();       // если был переход с параметрами, делаем fetch один раз
+            getPizzas(); // если был переход с параметрами, делаем fetch один раз
             isSearch.current = false; // и сбрасываем флаг
         } else {
-            fetchPizzas();       // обычный случай — при изменении фильтра, страницы, строки поиска
+            getPizzas(); // обычный случай — при изменении фильтра, страницы, строки поиска
         }
     }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
@@ -121,7 +142,16 @@ const Home = () => {
                 {/* <Sort value={sortType} onChangeSort={(i) => setSortType(i)} /> */}
             </div>
             <h2 className="content__title">Все пиццы</h2>
-            <div className="content__items">{isLoading ? skeletons : pizzas}</div>
+            {status === 'error' ? (
+                <div className="content__error-info">
+                    <br />
+                    <h2>Ошибка</h2>
+                    <br />
+                    <br />
+                </div>
+            ) : (
+                <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
+            )}
 
             <Pagination currentPage={currentPage} onChangePage={onChangePage}></Pagination>
         </div>

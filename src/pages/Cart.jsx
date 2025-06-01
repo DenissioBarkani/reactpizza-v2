@@ -1,5 +1,4 @@
-import React from 'react';
-import NotFoundBlock from '../components/NotFoundBlock';
+
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CartItem from '../components/CartItem';
