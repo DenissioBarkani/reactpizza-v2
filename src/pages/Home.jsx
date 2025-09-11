@@ -7,22 +7,22 @@ import Pagination from '../components/Pagination';
 import { SearchContext } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
+import { selectFilter, setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
-import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzasSlice';
 
 const Home = () => {
     const navigate = useNavigate();
     // const [items, setItems] = useState([]);
-    const { items, status } = useSelector((state) => state.pizzas); // данные из Redux
+    const { items, status } = useSelector(selectPizzaData); // данные из Redux
     // const [isLoading, setIsLoading] = useState(true);
 
     const isSearch = useRef(false); // флаг: были ли параметры из URL (чтобы не делать лишний fetch)
     const isMounted = useRef(false); // флаг: первый рендер (чтобы не пушить query в URL сразу)
 
-    const searchValue = useContext(SearchContext); // строка поиска из App (через Context)
-    const { sort, categoryId, currentPage } = useSelector((state) => state.filter); // данные из Redux
+    // const searchValue = useContext(SearchContext); // строка поиска из App (через Context)
+    const { sort, categoryId, currentPage, searchValue } = useSelector(selectFilter); // данные из Redux
     const sortType = sort.sortProperty;
 
     const dispatch = useDispatch();

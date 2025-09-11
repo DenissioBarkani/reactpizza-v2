@@ -9,27 +9,19 @@ import { createContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { decrement, increment } from './redux/slices/filterslice.js';
 
-export const SearchContext = createContext();
-
 function App() {
-
     const [searchValue, setSearchValue] = useState('');
     return (
         <div className="App">
             <div className="wrapper">
-                <SearchContext.Provider value={{ searchValue, setSearchValue }}>
-                    <Header />
-                    <div className="content">
-              
-                        <Routes>
-                            <Route path="/" element={<Home></Home>}></Route>
-                            <Route path="/cart" element={<Cart></Cart>}></Route>
-                            <Route path="*" element={<NotFound></NotFound>}></Route>
-                        </Routes>
-
-   
-                    </div>
-                </SearchContext.Provider>
+                <Header />
+                <div className="content">
+                    <Routes>
+                        <Route path="/" element={<Home></Home>}></Route>
+                        <Route path="/cart" element={<Cart></Cart>}></Route>
+                        <Route path="*" element={<NotFound></NotFound>}></Route>
+                    </Routes>
+                </div>
             </div>
 
             {/* <div>
