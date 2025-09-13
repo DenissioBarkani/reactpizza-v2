@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { selectFilter, setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzasSlice';
 
 const Home = () => {
@@ -124,7 +124,7 @@ const Home = () => {
         isMounted.current = true; // первый рендер прошёл — теперь можно пушить
     }, [categoryId, sortType, currentPage]);
 
-    const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+    const pizzas = items.map((obj) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock  {...obj} /></Link>);
 
     //  const pizzas = items.filter(obj => {
     //     if(obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
