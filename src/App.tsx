@@ -1,17 +1,17 @@
 // import './App.css';
 import './scss/app.scss';
-import Header from './components/Header';
-import Home from './pages/Home.jsx';
+import Header from './components/Header.jsx';
+import Home from './pages/Home.js';
 import NotFound from './pages/NotFound.jsx';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Cart from './pages/Cart.jsx';
 import { createContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { decrement, increment } from './redux/slices/filterslice.js';
-import FullPizza from './pages/FullPizza.jsx';
+// import { decrement, increment } from './redux/slices/filterslice.js';
+import FullPizza from './pages/FullPizza';
 import MainLayout from './layouts/MainLayout.jsx';
 
-function Parent({ children }) {
+function Parent({ children }: any) {
     return (
         <div>
             <h1>Заголовок</h1>
@@ -22,7 +22,7 @@ function Parent({ children }) {
 }
 
 function App() {
-    const [searchValue, setSearchValue] = useState('');
+    // const [searchValue, setSearchValue] = useState('');
     return (
         <Routes>
             <Route path="/" element={<MainLayout></MainLayout>}>

@@ -4,15 +4,19 @@ import Sort, { sortList } from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
 import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
-import { SearchContext } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { selectFilter, setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterslice';
+import {
+    selectFilter,
+    setCategoryId,
+    setCurrentPage,
+    setFilters,
+} from '../redux/slices/filterslice';
 import qs from 'qs';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzasSlice';
 
-const Home = () => {
+const Home: React.FC = () => {
     const navigate = useNavigate();
     // const [items, setItems] = useState([]);
     const { items, status } = useSelector(selectPizzaData); // данные из Redux
@@ -27,11 +31,11 @@ const Home = () => {
 
     const dispatch = useDispatch();
 
-    const onChangePage = (number) => {
+    const onChangePage = (number: number) => {
         dispatch(setCurrentPage(number));
     };
 
-    const OnChangeCategory = (id) => {
+    const OnChangeCategory = (id: number) => {
         dispatch(setCategoryId(id));
     };
 
@@ -72,6 +76,7 @@ const Home = () => {
         // }
 
         dispatch(
+            // @ts-ignore
             fetchPizzas({
                 order,
                 sortBy,
@@ -124,7 +129,11 @@ const Home = () => {
         isMounted.current = true; // первый рендер прошёл — теперь можно пушить
     }, [categoryId, sortType, currentPage]);
 
-    const pizzas = items.map((obj) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock  {...obj} /></Link>);
+    const pizzas = items.map((obj: any) => (
+        <Link key={obj.id} to={`/pizza/${obj.id}`}>
+            <PizzaBlock {...obj} />
+        </Link>
+    ));
 
     //  const pizzas = items.filter(obj => {
     //     if(obj.title.toLowerCase().includes(searchValue.toLowerCase())) {

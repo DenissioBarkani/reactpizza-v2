@@ -1,9 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSortType } from '../redux/slices/filterslice';
+import { selectSort, setSortType } from '../redux/slices/filterslice';
+
+type SortItem = {
+    name: string;
+    sortProperty: string;
+};
+
+type PopupClick = React.MouseEvent<HTMLBodyElement> & {
+    path: Node[];
+};
 
 // const list = ['популярности', 'цене', 'алфавиту'];
-export const sortList = [
+export const sortList: SortItem[] = [
     { name: 'популярности (DESC)', sortProperty: 'rating' },
     { name: 'популярности (ASC)', sortProperty: '-rating' },
     { name: 'цене (DESC)', sortProperty: 'price' },
@@ -15,26 +24,28 @@ export const sortList = [
 export default function Sort() {
     const [isVisible, setIsVisible] = useState(false);
     const dispatch = useDispatch();
-    const sort = useSelector((state) => state.filter.sort);
+    const sort = useSelector(selectSort);
 
-    const sortRef = useRef();
+    const sortRef = React.useRef<HTMLDivElement>(null);
 
-    const onClickItem = (obj) => {
+    const onClickItem = (obj: SortItem) => {
         // dispatch(onChangeSort(i));
         dispatch(setSortType(obj));
         setIsVisible(false);
     };
 
     useEffect(() => {
-        const hendleClickOutside = (e) => {
-            if (!e.composedPath().includes(sortRef.current)) {
-                console.log('клик');
+        const handleClickOutside = (e: MouseEvent) => {
+            // Проверяем, что клик был вне компонента
+            if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+                console.log('клик вне компонента');
                 setIsVisible(false);
             }
         };
-        document.body.addEventListener('click', hendleClickOutside);
 
-        return () => document.body.removeEventListener('click', hendleClickOutside);
+        document.body.addEventListener('click', handleClickOutside);
+
+        return () => document.body.removeEventListener('click', handleClickOutside);
     }, []);
 
     return (
