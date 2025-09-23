@@ -4,8 +4,7 @@ import Sort, { sortList } from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
 import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
 import {
     selectFilter,
     setCategoryId,
@@ -15,6 +14,7 @@ import {
 import qs from 'qs';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzasSlice';
+import { useAppDispatch } from '../redux/store';
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Home: React.FC = () => {
     const { sort, categoryId, currentPage, searchValue } = useSelector(selectFilter); // данные из Redux
     const sortType = sort.sortProperty;
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const onChangePage = (number: number) => {
         dispatch(setCurrentPage(number));
@@ -76,13 +76,12 @@ const Home: React.FC = () => {
         // }
 
         dispatch(
-            // @ts-ignore
             fetchPizzas({
                 order,
                 sortBy,
                 category,
                 search,
-                currentPage,
+                currentPage: String(currentPage),
             }),
         ); // сохраняем пиццы
     };
@@ -93,14 +92,29 @@ const Home: React.FC = () => {
             const params = qs.parse(window.location.search.substring(1));
             const sortObj = sortList.find((obj) => obj.sortProperty === params.sortProperty);
 
-            dispatch(
-                setFilters({
-                    currentPage: Number(params.currentPage),
-                    categoryId: Number(params.categoryId),
-                    sort: sortObj, // если нет — undefined
-                }),
-            );
-            isSearch.current = true; // активируем флаг, чтобы в следующем эффекте не делать fetch
+            // if (sortObj) {
+            //     dispatch(
+            //         setFilters({
+            //             searchValue: '', // добавляем пропущенные поля
+            //             currentPage: Number(params.currentPage),
+            //             categoryId: Number(params.categoryId),
+            //             sort: sortObj,
+            //         }),
+            //     );
+            //     isSearch.current = true; // активируем флаг, чтобы в следующем эффекте не делать fetch
+            // }
+
+            if (sortObj) {
+                dispatch(
+                    setFilters({
+                        searchValue: '', // добавляем пропущенные поля
+                        currentPage: Number(params.currentPage),
+                        categoryId: Number(params.categoryId),
+                        sort: sortObj,
+                    }),
+                );
+                isSearch.current = true; // активируем флаг, чтобы в следующем эффекте не делать fetch
+            }
         }
     }, []);
 

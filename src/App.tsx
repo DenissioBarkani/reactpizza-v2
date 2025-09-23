@@ -1,25 +1,22 @@
 // import './App.css';
 import './scss/app.scss';
-import Header from './components/Header.jsx';
-import Home from './pages/Home.js';
-import NotFound from './pages/NotFound.jsx';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import Cart from './pages/Cart.jsx';
-import { createContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import { Routes, Route } from 'react-router-dom';
+import Cart from './pages/Cart';
 // import { decrement, increment } from './redux/slices/filterslice.js';
 import FullPizza from './pages/FullPizza';
-import MainLayout from './layouts/MainLayout.jsx';
+import MainLayout from './layouts/MainLayout';
 
-function Parent({ children }: any) {
-    return (
-        <div>
-            <h1>Заголовок</h1>
-            <Outlet></Outlet>
-            {children}
-        </div>
-    );
-}
+// function Parent({ children }: any) {
+//     return (
+//         <div>
+//             <h1>Заголовок</h1>
+//             <Outlet></Outlet>
+//             {children}
+//         </div>
+//     );
+// }
 
 function App() {
     // const [searchValue, setSearchValue] = useState('');

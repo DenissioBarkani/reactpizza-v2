@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, selectCartItemById } from '../../redux/slices/cartSlice';
+import { addProduct, CartItem, selectCartItemById } from '../../redux/slices/cartSlice';
 
 type PizzaBlockProps = {
   id: string;
@@ -24,7 +24,7 @@ const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, title, price, sizes, types 
     const addedCount = cartItem ? cartItem.count : 0;
 
     const onClickHead = () => {
-        const item = {
+        const item: CartItem = {
             id,
             title,
             price,
@@ -32,6 +32,7 @@ const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, title, price, sizes, types 
                 'https://media.dodostatic.net/image/r:292x292/019591b642d87304a62d322945990861.avif',
             type: typeNames[activeType],
             size: sizes[activeSize],
+            count: 0,
         };
         dispatch(addProduct(item));
     };
