@@ -152,8 +152,8 @@ body {
         }
     }
 
-    .content__items{
-      display: block;
+    .content__items {
+        display: block;
     }
 
     &__item {
@@ -205,6 +205,13 @@ body {
                     path:first-of-type {
                         display: none;
                     }
+                }
+                &--disabled {
+                    opacity: 0.4;
+                    &:active {
+                        transform: none;
+                    }
+                   
                 }
             }
 

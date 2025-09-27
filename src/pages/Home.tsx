@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import Skeleton from '../components/PizzaBlock/skeleton';
@@ -35,9 +35,9 @@ const Home: React.FC = () => {
         dispatch(setCurrentPage(number));
     };
 
-    const OnChangeCategory = (id: number) => {
-        dispatch(setCategoryId(id));
-    };
+    const OnChangeCategory = React.useCallback((idx: number) => {
+        dispatch(setCategoryId(idx));
+    }, []);
 
     const getPizzas = async () => {
         // setIsLoading(true); // показать скелетоны
@@ -143,11 +143,7 @@ const Home: React.FC = () => {
         isMounted.current = true; // первый рендер прошёл — теперь можно пушить
     }, [categoryId, sortType, currentPage]);
 
-    const pizzas = items.map((obj: any) => (
-        <Link key={obj.id} to={`/pizza/${obj.id}`}>
-            <PizzaBlock {...obj} />
-        </Link>
-    ));
+    const pizzas = items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
 
     //  const pizzas = items.filter(obj => {
     //     if(obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
@@ -156,12 +152,13 @@ const Home: React.FC = () => {
     //     return false
     // }).map((obj) => <PizzaBlock key={obj.id} {...obj} />);
     const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i}></Skeleton>);
+
     return (
         <div className="container">
             <div className="content__top">
                 {/* setCategoryId */}
-                <Categories value={categoryId} onClickCategory={(i) => OnChangeCategory(i)} />
-                <Sort />
+                <Categories value={categoryId} OnChangeCategory={OnChangeCategory} />
+                <Sort value={sort}/>
                 {/* <Sort value={sortType} onChangeSort={(i) => setSortType(i)} /> */}
             </div>
             <h2 className="content__title">Все пиццы</h2>

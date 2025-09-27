@@ -7,7 +7,7 @@ export default function Header() {
     const location = useLocation();
 
     const { items, totalPrice } = useSelector(selectCart);
-    const totalCount = items.reduce((sum: number, item:any) => sum + item.count, 0);
+    const totalCount = items.reduce((sum: number, item: any) => sum + item.count, 0);
     return (
         <div className="header">
             <div className="container">
@@ -20,7 +20,7 @@ export default function Header() {
                         </div>
                     </div>
                 </Link>
-                <Search />
+                {location.pathname !== '/cart' && <Search />}
 
                 <div className="header__cart">
                     {location.pathname !== '/cart' && (
